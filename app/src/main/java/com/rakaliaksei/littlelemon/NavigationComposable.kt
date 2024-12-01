@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.rakaliaksei.littlelemon.screens.*
 
 @Composable
-fun Navigation(sharedPref: SharedPreferences) {
+fun Navigation(sharedPref: SharedPreferences, database: AppDatabase) {
     val navController = rememberNavController()
     val loggedIn = sharedPref.getBoolean("LoggedIn", false)
 
@@ -20,7 +20,7 @@ fun Navigation(sharedPref: SharedPreferences) {
             Onboarding(navController, sharedPref)
         }
         composable(Home.route) {
-            Home(navController)
+            Home(navController, database)
         }
         composable(Profile.route) {
             Profile(navController, sharedPref)
