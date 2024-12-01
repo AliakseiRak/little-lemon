@@ -1,5 +1,6 @@
-package com.rakaliaksei.littlelemon
+package com.rakaliaksei.littlelemon.screens
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,36 +15,42 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rakaliaksei.littlelemon.ui.theme.Color2
+import androidx.navigation.NavController
+import com.rakaliaksei.littlelemon.Onboarding
+import com.rakaliaksei.littlelemon.R
 import com.rakaliaksei.littlelemon.ui.theme.Color3
 import com.rakaliaksei.littlelemon.ui.theme.Color4
 import com.rakaliaksei.littlelemon.ui.theme.Color7
 import com.rakaliaksei.littlelemon.ui.theme.Color8
 
+@Preview(showBackground = true)
 @Composable
-fun Onboarding(modifier: Modifier = Modifier) {
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    val registerCallback: () -> Unit = {}
+fun Profile(navController: NavController? = null, sharedPref: SharedPreferences? = null) {
+
+//    with(sharedPref.edit()) {
+//        putString("FirstName", firstName)
+//        putString("LastName", lastName)
+//        putString("Email", email)
+//        putBoolean("LoggedIn", true)
+//        apply()
+//    }
+
+    val firstName = sharedPref?.getString("FirstName", "") ?: "First Name"
+    val lastName = sharedPref?.getString("LastName", "") ?: "Last Name"
+    val email = sharedPref?.getString("Email", "") ?: "email"
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier = Modifier
             .background(Color8)
     ) {
         Image(
@@ -55,19 +62,6 @@ fun Onboarding(modifier: Modifier = Modifier) {
                 .height(96.dp)
                 .background(Color8)
                 .padding(16.dp)
-        )
-        Text(
-            text = "Let's get to know you",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
-            color = Color8,
-            style = TextStyle(
-                fontSize = 24.sp,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color2)
-                .padding(32.dp)
         )
         Text(
             text = "Personal information",
@@ -83,31 +77,37 @@ fun Onboarding(modifier: Modifier = Modifier) {
         )
         OutlinedTextField(
             value = firstName,
-            onValueChange = { firstName = it },
+            onValueChange = { },
             label = { Text("First name") },
+            enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
         )
         OutlinedTextField(
             value = lastName,
-            onValueChange = { lastName = it },
+            onValueChange = { },
             label = { Text("Last name") },
+            enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
         )
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { },
             label = { Text("email") },
+            enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = registerCallback,
+            onClick = {
+                sharedPref?.edit()?.clear()?.apply()
+                navController?.navigate(Onboarding.route)
+            },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(
                 containerColor = Color3,
@@ -118,13 +118,7 @@ fun Onboarding(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(16.dp),
         ) {
-            Text(text = "Register", color = Color7)
+            Text(text = "Log out", color = Color7)
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OnboardingPreview() {
-    Onboarding()
 }
